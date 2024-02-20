@@ -47,7 +47,11 @@ public class ReflexCalculator {
                         "\r\n" +
                         "No se encontró la página");
             }
+            in.close();
+            out.close();
+            cliente.close();
         }
+        port.close();
     }
 
     private static String getResp(String query) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
@@ -55,14 +59,15 @@ public class ReflexCalculator {
         String op = query.substring(1, p1);
         String num = query.substring(p1+1, query.length()-1);
 
-        System.out.println("OP: "+op);
-        System.out.println("Num: "+num);
         Class c = Math.class;
         Method m = c.getMethod(op,Double.TYPE);
         Object obj = m.invoke(null, Double.parseDouble(num));
 
         System.out.println("Obj: "+obj);
-        return obj.toString();
+        return "HTTP/1.1 200 OK\r\n" +
+                "Content-Type: text/html\r\n"+
+                "\r\n" +
+                obj.toString();
     }
 
 }

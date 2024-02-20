@@ -49,41 +49,52 @@ public class HttpServer {
                         "\r\n" +
                         "No se encontró la página");
             }
+            in.close();
+            out.close();
+            cliente.close();
         }
+        port.close();
     }
 
-    private static String getComputar(String valor) throws IOException {
-        URL obj = new URL(GET_URL+valor);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("GET");
-        con.setRequestProperty("User-Agent", USER_AGENT);
+    private static String getComputar(String valor){
+        try {
 
-        //The following invocation perform the connection implicitly before getting the code
-        int responseCode = con.getResponseCode();
-        System.out.println("GET Response Code :: " + responseCode);
 
-        if (responseCode == HttpURLConnection.HTTP_OK) { // success
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    con.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
+            URL obj = new URL(GET_URL + valor);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("User-Agent", USER_AGENT);
 
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
+            //The following invocation perform the connection implicitly before getting the code
+            int responseCode = con.getResponseCode();
+            System.out.println("GET Response Code :" + responseCode);
+
+            if (responseCode == HttpURLConnection.HTTP_OK) { // success
+                BufferedReader in = new BufferedReader(new InputStreamReader(
+                        con.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+
+                }
+                in.close();
+
+                System.out.println("Respuesta: " + response);
+                return "HTTP/1.1 200 OK\r\n" +
+                        "\r\n" +
+                        response;
+            } else {
+                return "HTTP/1.1 200 OK\r\n" +
+                        "\r\n" +
+                        "No se encontró el resultado";
+
             }
-            in.close();
-
-            // print result
-            System.out.println(response.toString());
-            return "HTTP/1.1 200 OK\r\n" +
-                    "\r\n"+
-                    response.toString();
-        } else {
-            return "HTTP/1.1 200 OK\r\n" +
-                    "\r\n"+
-                    "No se encontró el resultado";
-
+        }catch (IOException e){
+            e.printStackTrace();
         }
+        return null;
     }
 
     private static String getClient() {
