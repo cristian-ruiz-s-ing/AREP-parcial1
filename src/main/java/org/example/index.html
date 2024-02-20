@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculadora</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<h1>Calculadora Math</h1>
+<form action="/calculadora">
+    <label for="operacion">Operación</label><br>
+    <input type="text" id="operacion" name="operacion" value="cos(1)"><br><br>
+    <input type="button" value="Submit" onclick="loadGetResp()">
+</form>
+<div id="getresp"></div>
+
+<script>
+    function loadGetResp() {
+        let nameVar = document.getElementById("operacion").value;
+        const xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            document.getElementById("getresp").innerHTML =
+            this.responseText;
+        }
+        xhttp.open("GET", "/computar?name="+nameVar);
+        xhttp.send();
+    }
+</script>
